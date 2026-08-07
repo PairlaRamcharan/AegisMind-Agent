@@ -36,6 +36,12 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Normalize duplicate slashes in request URLs
+app.use((req, res, next) => {
+  req.url = req.url.replace(/^\/\/+/, '/');
+  next();
+});
+
 // Zero-Trust Payload Interceptor Middleware
 app.use(aegisInterceptor);
 
