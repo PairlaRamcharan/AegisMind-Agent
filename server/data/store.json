@@ -3,14 +3,14 @@
     {
       "id": "e04c8ebd-4e8b-4c54-815e-3b4d672a13e9",
       "email": "admin@aegismind.io",
-      "password_hash": "$2a$10$MeTwng6LC9XSO9L3uZqkDufFyD/..20ssjaMET69KnzgSL9ffdgnS",
+      "password_hash": "$2a$10$bPvZtD/cLOSSeZrfCHonouJ1fwAhlc95gK9y.P.RFLWABLVkm5L3S",
       "role": "ADMIN",
       "created_at": "2026-08-06T05:51:29.780Z"
     },
     {
       "id": "908fef26-3f16-4913-8b2e-2010454fcc3c",
       "email": "analyst@aegismind.io",
-      "password_hash": "$2a$10$I7e8MzGhQQ3qapbhpVjYK.9z5dtXK8vKCQAMQwCqd7akZ3.o5hWHK",
+      "password_hash": "$2a$10$bPvZtD/cLOSSeZrfCHonouJ1fwAhlc95gK9y.P.RFLWABLVkm5L3S",
       "role": "ANALYST",
       "created_at": "2026-08-06T05:51:29.780Z"
     }
