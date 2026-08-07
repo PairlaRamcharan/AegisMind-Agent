@@ -1,0 +1,118 @@
+{
+  "users": [
+    {
+      "id": "e04c8ebd-4e8b-4c54-815e-3b4d672a13e9",
+      "email": "admin@aegismind.io",
+      "password_hash": "$2a$10$MeTwng6LC9XSO9L3uZqkDufFyD/..20ssjaMET69KnzgSL9ffdgnS",
+      "role": "ADMIN",
+      "created_at": "2026-08-06T05:51:29.780Z"
+    },
+    {
+      "id": "908fef26-3f16-4913-8b2e-2010454fcc3c",
+      "email": "analyst@aegismind.io",
+      "password_hash": "$2a$10$I7e8MzGhQQ3qapbhpVjYK.9z5dtXK8vKCQAMQwCqd7akZ3.o5hWHK",
+      "role": "ANALYST",
+      "created_at": "2026-08-06T05:51:29.780Z"
+    }
+  ],
+  "telemetry_logs": [
+    {
+      "id": "d684fcbf-86e8-4a11-8463-3d828c0bccab",
+      "ip_address": "198.51.100.42",
+      "method": "POST",
+      "endpoint": "/api/v1/auth/login",
+      "headers": {
+        "user-agent": "Mozilla/5.0 ExploitScanner/2.0"
+      },
+      "payload": {
+        "username": "' UNION SELECT username, password FROM users --",
+        "password": "123"
+      },
+      "is_threat": true,
+      "threat_category": "SQL Injection",
+      "confidence_score": 0.98,
+      "risk_level": "CRITICAL",
+      "technicalExplanation": "Classic UNION-based SQL injection targeting authentication credentials.",
+      "suggestedMitigation": "Use parameterized SQL queries and input validation.",
+      "processed_at": "2026-08-06T05:26:29.780Z"
+    },
+    {
+      "id": "d4b5eba4-2f47-4d42-99cd-d97f2536e913",
+      "ip_address": "203.0.113.195",
+      "method": "GET",
+      "endpoint": "/api/v1/users?role=admin; cat /etc/passwd",
+      "headers": {
+        "user-agent": "curl/7.68.0"
+      },
+      "payload": {
+        "role": "admin; cat /etc/passwd"
+      },
+      "is_threat": true,
+      "threat_category": "Command Injection",
+      "confidence_score": 0.95,
+      "risk_level": "CRITICAL",
+      "technicalExplanation": "Command chaining via shell metacharacters attempting system file disclosure.",
+      "suggestedMitigation": "Sanitize shell arguments and strictly disallow command execution on user parameters.",
+      "processed_at": "2026-08-06T05:36:29.780Z"
+    },
+    {
+      "id": "c6a9ee80-5b1d-4e57-b562-f78eda3b045c",
+      "ip_address": "192.0.2.77",
+      "method": "GET",
+      "endpoint": "/api/v1/dashboard/metrics",
+      "headers": {
+        "user-agent": "Mozilla/5.0 Chrome/120.0"
+      },
+      "payload": {},
+      "is_threat": false,
+      "threat_category": "None",
+      "confidence_score": 0.02,
+      "risk_level": "BENIGN",
+      "technicalExplanation": "Standard benign GET request for dashboard telemetry metrics.",
+      "suggestedMitigation": "None required.",
+      "processed_at": "2026-08-06T05:46:29.780Z"
+    }
+  ],
+  "quarantine_list": [
+    {
+      "id": "a387c7dd-876d-4c80-aa57-9c0f9d2c79df",
+      "ip_address": "198.51.100.42",
+      "reason": "Automated isolation triggered by SQL Injection payload",
+      "threat_category": "SQL Injection",
+      "status": "ACTIVE",
+      "quarantined_at": "2026-08-06T05:27:29.780Z",
+      "released_at": null
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "id": "e132f826-eabf-4eed-b75c-778e51f06309",
+      "telemetry_id": "d684fcbf-86e8-4a11-8463-3d828c0bccab",
+      "title": "Unsanitized Dynamic SQL Query in Auth Route",
+      "owasp_category": "A03: Injection",
+      "file_path": "server/src/routes/auth.routes.js",
+      "vulnerable_code": "// Vulnerable Authentication Query\nconst query = \"SELECT * FROM users WHERE email = '\" + req.body.email + \"' AND password = '\" + req.body.password + \"'\";\nconst result = await db.query(query);",
+      "severity": "CRITICAL",
+      "status": "UNPATCHED",
+      "created_at": "2026-08-06T05:31:29.780Z"
+    }
+  ],
+  "code_patches": [
+    {
+      "id": "54808b64-2987-4410-be8e-2511a9560421",
+      "vulnerability_id": "e132f826-eabf-4eed-b75c-778e51f06309",
+      "patched_code": "// Secure Parameterized Query\nconst query = 'SELECT id, email, password_hash, role FROM users WHERE email = $1';\nconst result = await db.query(query, [req.body.email]);",
+      "diff_content": "--- server/src/routes/auth.routes.js\n+++ server/src/routes/auth.routes.js\n@@ -12,2 +12,2 @@\n-const query = \"SELECT * FROM users WHERE email = '\" + req.body.email + \"' AND password = '\" + req.body.password + \"'\";\n-const result = await db.query(query);\n+const query = 'SELECT id, email, password_hash, role FROM users WHERE email = $1';\n+const result = await db.query(query, [req.body.email]);",
+      "verification_status": "PASSED",
+      "verification_output": "Sandbox exploit test passed. Zero SQL injection vulnerabilities detected.",
+      "applied_at": null,
+      "created_at": "2026-08-06T05:41:29.780Z"
+    }
+  ],
+  "settings": {
+    "sensitivityThreshold": 0.75,
+    "autopilotMode": false,
+    "honeypotStrategy": "FAKE_DATA",
+    "geminiApiKey": "your_actual_gemini_api_key_here"
+  }
+}
